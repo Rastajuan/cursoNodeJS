@@ -1,0 +1,14 @@
+const os = require('node:os');
+console.log('Info del sistema operativo: ');
+console.log('---------------------------------');
+console.log('Plataforma: ' , os.platform());
+console.log('Versión: ' , os.version());
+console.log('Arquitectura: ' , os.arch());
+console.log("CPUs: " , os.cpus());
+console.log('Memoria libre: ' , os.freemem());
+console.log('Memoria total: ', os.totalmem());
+console.log('Directorio raíz: ', os.homedir());
+console.log('Tiempo encendido: ', os.uptime() /60 , 'minutos');
+console.log('Tiempo encendido: ', os.uptime() /60 /60, 'horas');
+console.log('Tiempo encendido: ', os.uptime() /60 /60 /24, 'días');
+console.log('---------------------------------');

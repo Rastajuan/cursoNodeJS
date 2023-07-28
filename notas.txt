@@ -1,0 +1,69 @@
+globalThis es una variable global que se puede acceder desde cualquier parte del codigo, es como el window de JS
+
+En node.js vamos a tener diferentes archivos, cada uno con su propio scope, por lo que no podemos acceder a las variables de un archivo desde otro archivo, para eso vamos a usar el objeto global, que es como el window de node.js
+
+Node.js es monohilo y está basado en eventos. Trabaja de forma síncrona y asíncrona. Node.js es asíncrono por defecto, pero podemos hacer que trabaje de forma síncrona si queremos.
+
+Usaremos un patrón de diseño 'Módulo' para poder exportar e importar variables y funciones entre archivos. Organizaremos nuestro código en diferentes archivos para que sea más fácil de mantener y de entender.
+
+SISTEMA CLASICO DE MODULOS EN NODE JS (CommonJS)
+No es recomendable a dia de hoy, pero es importante conocerlo para entender como funcionan los modulos en node.js
+En el archivo que queremos exportar escribimos: module.exports = nombreVariable o nombreFuncion
+En el archivo que queremos importar escribimos: const nombreVariable = require('./nombreArchivo')
+Para forzar a que el nombre de la variable sea el mismo que el de, por ejemplo, la funcion que queremos importar, en el archivo donde se encuentra la funcion escribimos: 
+module.exports = {
+  nombreFuncion
+}
+Esto obligara a que el nombre de la variable sea el mismo que el de la funcion que queremos importar.
+Los módulos de node.js se ejecutan en modo estricto, por lo que no es necesario escribir 'use strict' en cada archivo. Se suelen guardar en una carpeta llamada cjs (CommonJS)
+
+SISTEMA MODERNO DE MODULOS EN NODE JS (ES6 Modules)
+Es el sistema de modulos que se usa actualmente en node.js
+En lugar de usar la extension .js clásica de los archivos, usaremos .mjs
+Las extensiones que podemos usr con node.js son: .cjs, .mjs, .js. Nodejs utiliza por defecto .js, podemos forzarlo con la extension .cjs o podemos usar .mjs para usar el sistema de modulos de ES6.
+Haremos el import con llaves: import { nombreVariable } from './nombreArchivo' para asegurarnos de que el nombre de la variable es el mismo que el de la funcion que queremos importar.
+En el archivo donde tenemos la funcion o variable que queremos exportar escribimos export en la misma linea que la funcion o variable que queremos exportar: 
+export const nombreVariable = 'valor' o export function nombreFuncion() {}
+Podemos exportar varias variables o funciones en un mismo archivo, para ello escribimos export en la misma linea que cada una de las variables o funciones que queremos exportar.
+Se pueden importar todas las funciones o variables de un archivo escribiendo: 
+import * as nombreVariable from './nombreArchivo'
+o podemos importar varias funciones o variables de un archivo escribiendo:
+import { nombreVariable1, nombreFuncion } from './nombreArchivo'
+
+En el sistema clásico no necesitamos poner la extension del archivo que queremos importar, pero en el sistema moderno si que es necesario poner la extension del archivo que queremos importar. En ES6 no se pueden importar archivos que no tengan extension.
+
+MODULOS NATIVOS DE NODE JS
+Son modulos que vienen por defecto en node.js, no es necesario instalarlos con npm.
+Los módulos nativos se pueden importar de la misma forma que los modulos que nosotros creamos, pero no es necesario poner la ruta, solo el nombre del modulo. Actualmente se uiliza la forma node:modulo, pero tambien se puede usar la forma ES6: import { modulo } from 'node:modulo'
+-Modulo os: nos permite acceder a informacion del sistema operativo
+  const os = require('node:os')
+  console.log(os.platform()) //nos devuelve el sistema operativo en el que estamos trabajando
+  console.log(os.release()) //nos devuelve la version del sistema operativo en el que estamos trabajando
+  console.log(os.arch()) //nos devuelve la arquitectura del sistema operativo en el que estamos trabajando
+  console.log('free mem: ', os.freemem() /1024 /1024) //nos devuelve la memoria libre que tenemos en el sistema. Dividimos entre 1024 dos veces para pasar de bytes a megabytes
+  console.log('total mem: ', os.totalmem() /1024 /1024) //nos devuelve la memoria total que tenemos en el sistema. Dividimos entre 1024 dos veces para pasar de bytes a megabytes
+  console.log(os.cpus()) //nos devuelve la informacion de los procesadores que tenemos en el sistema. Con esto podremos escalar procesos en Node.js
+  console.log(os.cpus().length) //nos devuelve el numero de procesadores que tenemos en el sistema
+  console.log(os.uptime() / 60 /60) //nos devuelve el tiempo que lleva encendido el sistema en segundos. Dividimos entre 60 para pasar de segundos a minutos y entre 60 otra vez para pasar de minutos a horas y entre 24 para pasar de horas a dias
+  console.log('Directorio raíz: ', os.homedir()); //nos devuelve el directorio raiz del sistema
+
+-Modulo fs: Significa fyle system o sistema de archivos. Es uno de los módulos más importantes de Node.js
+  ·STAT
+  const fs = require('node:fs')
+  const stats = fs.statSync('./index.js') //nos devuelve un objeto con informacion del archivo que le pasamos como parametro
+  console.log(stats) //nos devuelve un objeto con informacion del archivo que le pasamos como parametro
+  console.log(stats.isFile()) //nos devuelve true si el archivo que le pasamos como parametro es un archivo
+  console.log(stats.isDirectory()) //nos devuelve true si el archivo que le pasamos como parametro es un directorio
+  console.log(stats.isSocket()) //nos devuelve true si el archivo que le pasamos como parametro es un socket
+  console.log(stats.isFIFO()) //nos devuelve true si el archivo que le pasamos como parametro es un FIFO, que es un tipo de archivo especial que se usa para la comunicacion entre procesos
+  console.log(stats.isCharacterDevice()) //nos devuelve true si el archivo que le pasamos como parametro es un dispositivo de caracteres
+  console.log(stats.isBlockDevice()) //nos devuelve true si el archivo que le pasamos como parametro es un dispositivo de bloque
+  console.log(stats.isSymbolicLink()) //nos devuelve true si el archivo que le pasamos como parametro es un enlace simbolico
+  console.log(stats.size) //nos devuelve el tamaño del archivo que le pasamos como parametro
+  console.log(stats.atime) //nos devuelve la fecha de acceso del archivo que le pasamos como parametro
+  console.log(stats.mtime) //nos devuelve la fecha de modificacion del archivo que le pasamos como parametro
+  console.log(stats.ctime) //nos devuelve la fecha de creacion del archivo que le pasamos como parametro
+  console.log(stats.birthtime) //nos devuelve la fecha de creacion del archivo que le pasamos como parametro
+  ·READ
+  const fs = require('node:fs')
+  const text = fs.readFileSync('./index.js', 'utf-8') //nos devuelve el contenido del archivo que le pasamos como parametro. El segundo parametro es el encoding, que por defecto es utf-8. Si no ponemos el encoding (utf-8) nos devuelve un buffer y no el contenido del archivo
